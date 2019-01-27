@@ -25,7 +25,7 @@ if __name__ == '__main__':
         while True:
             # Read the temperature and humidity
             humidity, temperature = readAdafruitDHT('11',4) #  dht 11 yada hangi ürünü kullanıyorsanız o 4 nolu pin girişi
-                if temperature > 36.5:  #36,5 dereye geldiğinde 17 nolu pin 1 konumuna gelecektir.
+                if temperature > 37:  #337 dereye geldiğinde 17 nolu pin 1 konumuna gelecektir.
                 GPIO.output(17,GPIO.HIGH)
             else:
                 GPIO.output(17,GPIO.LOW)
