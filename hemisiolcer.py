@@ -4,6 +4,9 @@ import playsound
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import os
+
+#isi ve nem ölçer
+
 def readAdafruitDHT(moduleType,pin):
     """returns the humidity and temperature as integers."""
     sensor_args = { '11': Adafruit_DHT.DHT11,
@@ -14,7 +17,7 @@ def readAdafruitDHT(moduleType,pin):
     humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
     return (int(humidity), int(temperature))
 
-
+# kullandığım çıkışlar
 if __name__ == '__main__':
     #Setup the GPIO
     GPIO.setmode(GPIO.BCM)
@@ -29,16 +32,16 @@ if __name__ == '__main__':
             humidity, temperature = readAdafruitDHT('11',4)
             # If the temp is > 30 turn the pin on
             if temperature > 37.5:
-                GPIO.output(17,GPIO.HIGH)
+                GPIO.output(17,GPIO.HIGH) #Sıcaklık 37.5'in altına inerse lamba yak
             else:
-                GPIO.output(17,GPIO.LOW)
+                GPIO.output(17,GPIO.LOW)  #Sıcaklık 37.5'in altına inerse lamba kapat
             time.sleep(0)
             if humidity > 64:
                 GPIO.output(27,GPIO.HIGH)
-                os.system('python3 /home/pi/nemac.py')
+                os.system('python3 /home/pi/nemac.py') #nem 64 ün üstüne çıktığında nem motorunu çalıştır kapağı aç
             else:
                 GPIO.output(27,GPIO.LOW)
-                os.system('python3 /home/pi/nemkapat.py')
+                os.system('python3 /home/pi/nemkapat.py') #nem 64 ün altına düştüğünde nem motorunu çalıştır kapağı kapat
             time.sleep(0)
             #if humidity < 63:
             #   os.system('python3 nemkapat.py')
