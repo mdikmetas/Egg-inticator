@@ -1,0 +1,64 @@
+import time
+import sys
+import Adafruit_DHT
+import RPi.GPIO as GPIO
+import os
+import lcddriver
+calisti = False
+#isi ve nem olcer
+
+sensor = Adafruit_DHT.DHT11
+pin = 4
+
+lcd = lcddriver.lcd()
+lcd.lcd_clear()
+
+# kullandigim
+if __name__ == '__main__':
+    #Setup the GPIO
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(17,GPIO.OUT)
+    GPIO.setup(27,GPIO.OUT)
+    GPIO.setup(21,GPIO.OUT)
+    try:
+        while True:
+            humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+            # Read the temperature and humidity
+            if humidity is not None and temperature is not None:
+                    lcd.lcd_display_string('SICAKLIK: {0:0.1f} C'.format(temperature), 1)
+                    lcd.lcd_display_string('NEM: {0:0.1f} %'.format(humidity), 2)
+            else:
+                    lcd.lcd_display_string('SICAKLIK: {0:0.1f} C'.format(temperature), 1)
+                    lcd.lcd_display_string('NEM: {0:0.1f} %'.format(humidity), 2)
+            time.sleep(0)
+            # If the temp is > 30 turn the pin on
+            if temperature > 37:
+                    GPIO.output(17,GPIO.HIGH) #Sicaklik  37.5'in altina inerse lamba yak
+            else:
+                    GPIO.output(17,GPIO.LOW)  #Sicaklik 37.5'in altina inerse lamba kapat
+
+            time.sleep(0)
+
+            if humidity > 57:
+                if calisti == False:
+                    calisti = True
+                    GPIO.output(27,GPIO.HIGH)
+#                    os.system('python /home/pi/kapakac.py') #nem 64 un ustun kapat
+            else:
+                if calisti == True:
+                    calisti = False
+                    GPIO.output(27,GPIO.LOW)
+#                    os.system('python /home/pi/kapakkapat.py') #nem 64 un ac
+
+
+            time.sleep(0)
+            #if humidity < 63:
+            #   os.system('python3 nemkapat.py')
+           # else:
+           #    os.system('python3 nemac.py')
+           # time.sleep(0)
+#            os.system('python /home/pi/lcd/4.py')
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        print("Bye")
